@@ -71,5 +71,14 @@ function App() {
     </AuthProvider>
   );
 }
+{/* Public Routes */}
+<Route path="/" element={<Home />} />
+<Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+<Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+<Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+<Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+
+// Add this route for public package viewing
+<Route path="/package/:id" element={<PackageDetails publicView />} />
 
 export default App;
