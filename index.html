@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sun Bank - Investment App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        /* Header */
+        .app-header {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .app-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .app-header h1 i {
+            font-size: 2rem;
+        }
+        
+        /* Navigation */
+        .nav-container {
+            display: flex;
+            background: #2d3748;
+            overflow-x: auto;
+        }
+        
+        .nav-tab {
+            padding: 15px 25px;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .nav-tab:hover {
+            background: #4a5568;
+        }
+        
+        .nav-tab.active {
+            background: #ff7e5f;
+        }
+        
+        /* Main Content */
+        .content-container {
+            padding: 30px;
+            min-height: 600px;
+        }
+        
+        .page {
+            display: none;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Login/Signup Forms */
+        .form-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 40px 30px;
+            background: #f7fafc;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d3748;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus {
+            border-color: #667eea;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .form-button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .form-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-toggle {
+            text-align: center;
+            margin-top: 25px;
+            color: #4a5568;
+        }
+        
+        .form-toggle a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s ease;
+        }
+        
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            color: #718096;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-value {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        
+        .card-value.zero-balance {
+            color: #a0aec0;
+            letter-spacing: 2px;
+        }
+        
+        .card-value.taka {
+            color: #38a169;
+        }
+        
+        /* Packages */
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+        
+        .package-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .package-card:hover {
+            border-color: #667eea;
+            transform: translateY(-5px);
+        }
+        
+        .package-card.popular {
+            border-color: #ff7e5f;
+            position: relative;
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: 15px;
+            right: -35px;
+            background: #ff7e5f;
+            color: white;
+            padding: 5px 40px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+        
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .package-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #38a169;
+            margin-bottom: 20px;
+        }
+        
+        .package-details {
+            margin-bottom: 25px;
+        }
+        
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .package-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(to right, #38a169, #2f855a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .package-button:hover {
+            background: linear-gradient(to right, #2f855a, #276749);
+        }
+        
+        /* Transactions */
+        .transaction-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .transaction-button {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .transaction-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(102, 126, 234, 0.3);
+        }
+        
+        .transactions-list {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px;
+            border-bottom: 1px solid #e2e8f0;
+            align-items: center;
+        }
+        
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+        
+        .transaction-info h4 {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .transaction-info p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+        
+        .transaction-amount {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        
+        .transaction-amount.deposit {
+            color: #38a169;
+        }
+        
+        .transaction-amount.withdraw {
+            color: #e53e3e;
+        }
+        
+        /* Profile */
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: 700;
+        }
+        
+        .profile-info h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+        
+        .profile-info p {
+            color: #718096;
+        }
+        
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .running-packages {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal.active {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #718096;
+        }
+        
+        .whatsapp-help {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #25D366;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            box-shadow: 0 5px 15px rgba(37, 211, 102, 0.5);
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .whatsapp-help:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.7);
+        }
+        
+        .bkash-info {
+            background: #e1306c;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: 600;
+        }
+        
+        .charge-note {
+            color: #e53e3e;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+        
+        .zero-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+        }
+        
+        .zero-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .transaction-controls {
+                flex-direction: column;
+            }
+            
+            .nav-container {
+                justify-content: flex-start;
+            }
+            
+            .app-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- App Header -->
+        <header class="app-header">
+            <h1><i class="fas fa-sun"></i> Sun Bank</h1>
+            <p>Smart Investment Platform</p>
+        </header>
+        
+        <!-- Navigation -->
+        <nav class="nav-container">
+            <button class="nav-tab" data-page="home"><i class="fas fa-home"></i> Home</button>
+            <button class="nav-tab" data-page="packages"><i class="fas fa-gift"></i> Investment Packages</button>
+            <button class="nav-tab" data-page="transactions"><i class="fas fa-exchange-alt"></i> Transactions</button>
+            <button class="nav-tab" data-page="profile"><i class="fas fa-user"></i> My Profile</button>
+            <button class="nav-tab" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </nav>
+        
+        <!-- Main Content -->
+        <main class="content-container">
+            <!-- Login Page -->
+            <div class="page active" id="login-page">
+                <div class="form-container">
+                    <h2 class="form-title">Login to Sun Bank</h2>
+                    <div class="form-group">
+                        <label for="login-phone">Phone Number</label>
+                        <input type="tel" id="login-phone" placeholder="01XXXXXXXXX" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    <button class="form-button" id="loginBtn">Login</button>
+                    <div class="form-toggle">
+                        Don't have an account? <a id="showSignup">Sign up</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Signup Page -->
+            <div class="page" id="signup-page">
+                <div class="form-container">
+                    <h2 class="form-title">Create Account</h2>
+                    <div class="form-group">
+                        <label for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-phone">Phone Number</label>
+                        <input type="tel" id="signup-phone" placeholder="01XXXXXXXXX" maxlength="11">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-password">Password</label>
+                        <input type="password" id="signup-password" placeholder="Create a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="signup-confirm">Confirm Password</label>
+                        <input type="password" id="signup-confirm" placeholder="Confirm your password">
+                    </div>
+                    <button class="form-button" id="signupBtn">Create Account</button>
+                    <div class="form-toggle">
+                        Already have an account? <a id="showLogin">Login</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Home Page -->
+            <div class="page" id="home-page">
+                <h2 class="section-title"><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                
+                <div class="dashboard">
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-wallet"></i> Total Balance</div>
+                        <div class="card-value zero-balance" id="total-balance">000 ৳</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-hand-holding-usd"></i> Total Deposit</div>
+                        <div class="card-value zero-balance" id="total-deposit">000 ৳</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-chart-line"></i> Total Investment</div>
+                        <div class="card-value zero-balance" id="total-investment">000 ৳</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-money-bill-wave"></i> Total Profit</div>
+                        <div class="card-value zero-balance" id="total-profit">000 ৳</div>
+                    </div>
+                </div>
+                
+                <div class="bkash-info">
+                    <i class="fas fa-mobile-alt"></i> All transactions via bKash: 01340809337
+                </div>
+                
+                <div class="zero-state" id="zero-state-message">
+                    <i class="fas fa-coins"></i>
+                    <h3>Start Your Investment Journey</h3>
+                    <p>Make your first deposit and start investing in packages to earn profits!</p>
+                    <button class="transaction-button" id="firstDepositBtn" style="margin-top: 20px;">
+                        <i class="fas fa-plus-circle"></i> Make First Deposit
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Packages Page -->
+            <div class="page" id="packages-page">
+                <h2 class="section-title"><i class="fas fa-gift"></i> Investment Packages</h2>
+                <p>Choose a package to start investing. All profits are guaranteed!</p>
+                
+                <div class="packages-grid" id="packages-container">
+                    <!-- Packages will be loaded here by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Transactions Page -->
+            <div class="page" id="transactions-page">
+                <h2 class="section-title"><i class="fas fa-exchange-alt"></i> Transactions</h2>
+                
+                <div class="transaction-controls">
+                    <button class="transaction-button" id="depositBtn">
+                        <i class="fas fa-plus-circle"></i> Deposit
+                    </button>
+                    <button class="transaction-button" id="withdrawBtn">
+                        <i class="fas fa-minus-circle"></i> Withdraw
+                    </button>
+                </div>
+                
+                <div class="charge-note">
+                    <i class="fas fa-info-circle"></i> Note: 2% withdrawal charge applied on all withdrawals
+                </div>
+                
+                <h3 style="margin-top: 30px; margin-bottom: 15px;">Transaction History</h3>
+                <div class="transactions-list" id="transactions-list">
+                    <div class="zero-state">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>No Transactions Yet</h3>
+                        <p>Your transaction history will appear here</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Profile Page -->
+            <div class="page" id="profile-page">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="user-avatar">U</div>
+                    <div class="profile-info">
+                        <h2 id="user-name">User Name</h2>
+                        <p id="user-phone">Phone: 01XXXXXXXXX</p>
+                        <p>Member since: <span id="member-since">2023</span></p>
+                    </div>
+                </div>
+                
+                <div class="profile-stats">
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-chart-pie"></i> Total Investment</div>
+                        <div class="card-value zero-balance" id="profile-investment">000 ৳</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-coins"></i> Total Profit</div>
+                        <div class="card-value zero-balance" id="profile-profit">000 ৳</div>
+                    </div>
+                    
+                    <div class="dashboard-card">
+                        <div class="card-title"><i class="fas fa-boxes"></i> Packages Bought</div>
+                        <div class="card-value zero-balance" id="packages-bought">0</div>
+                    </div>
+                </div>
+                
+                <div class="running-packages">
+                    <h3 class="section-title"><i class="fas fa-spinner"></i> Running Packages</h3>
+                    <div id="running-packages">
+                        <div class="zero-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No Active Packages</h3>
+                            <p>Start investing to see your running packages here</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <!-- Deposit Modal -->
+    <div class="modal" id="depositModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Deposit Funds</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="deposit-amount">Amount (৳)</label>
+                <input type="number" id="deposit-amount" placeholder="Enter amount">
+            </div>
+            <div class="bkash-info">
+                <i class="fas fa-info-circle"></i> Send money to bKash: 01340809337
+            </div>
+            <div class="form-group">
+                <label for="deposit-trxid">bKash Transaction ID</label>
+                <input type="text" id="deposit-trxid" placeholder="Enter bKash transaction ID">
+            </div>
+            <button class="form-button" id="confirmDeposit">Confirm Deposit</button>
+        </div>
+    </div>
+    
+    <!-- Withdraw Modal -->
+    <div class="modal" id="withdrawModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Withdraw Funds</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="withdraw-amount">Amount (৳)</label>
+                <input type="number" id="withdraw-amount" placeholder="Enter amount">
+            </div>
+            <div class="form-group">
+                <label for="withdraw-bkash">Your bKash Number</label>
+                <input type="tel" id="withdraw-bkash" placeholder="01XXXXXXXXX" maxlength="11">
+            </div>
+            <div class="charge-note">
+                <i class="fas fa-exclamation-triangle"></i> 2% withdrawal charge will be applied
+            </div>
+            <div class="form-group">
+                <label>You will receive: <span id="withdraw-receive">0 ৳</span></label>
+            </div>
+            <button class="form-button" id="confirmWithdraw">Confirm Withdraw</button>
+        </div>
+    </div>
+    
+    <!-- Package Modal -->
+    <div class="modal" id="packageModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Buy Investment Package</h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div id="package-modal-content">
+                <!-- Package details will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- WhatsApp Help -->
+    <div class="whatsapp-help" id="whatsappBtn">
+        <i class="fab fa-whatsapp"></i>
+    </div>
+    
+    <script>
+        // App Data and State
+        let currentUser = null;
+        let isLoggedIn = false;
+        
+        // Sample user data (in real app, this would come from backend)
+        const sampleUsers = [
+            { phone: "01340809337", password: "sunbank123", name: "Sun Bank User", joinDate: "2023-01-15" }
+        ];
+        
+        // Investment Packages Data
+        const investmentPackages = [
+            { id: 1, name: "Starter Pack", price: 299, profit: 35, lockDays: 3 },
+            { id: 2, name: "Basic Pack", price: 449, profit: 50, lockDays: 5 },
+            { id: 3, name: "Silver Pack", price: 890, profit: 150, lockDays: 7 },
+            { id: 4, name: "Gold Pack", price: 1199, profit: 300, lockDays: 10 },
+            { id: 5, name: "Platinum Pack", price: 1999, profit: 500, lockDays: 15 },
+            { id: 6, name: "Diamond Pack", price: 3599, profit: 1000, lockDays: 20 },
+            { id: 7, name: "VIP Pack", price: 4999, profit: 2000, lockDays: 25, popular: true },
+            { id: 8, name: "Premium Pack", price: 10999, profit: 3000, lockDays: 30, popular: true }
+        ];
+        
+        // User transactions and packages (START FROM ZERO)
+        let userData = {
+            balance: 0,
+            totalDeposit: 0,
+            totalInvestment: 0,
+            totalProfit: 0,
+            packagesBought: 0,
+            transactions: [],
+            runningPackages: []
+        };
+        
+        // DOM Elements
+        const pages = {
+            login: document.getElementById('login-page'),
+            signup: document.getElementById('signup-page'),
+            home: document.getElementById('home-page'),
+            packages: document.getElementById('packages-page'),
+            transactions: document.getElementById('transactions-page'),
+            profile: document.getElementById('profile-page')
+        };
+        
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const modals = {
+            deposit: document.getElementById('depositModal'),
+            withdraw: document.getElementById('withdrawModal'),
+            package: document.getElementById('packageModal')
+        };
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in (in a real app, check localStorage or session)
+            const savedUser = localStorage.getItem('sunBankUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                isLoggedIn = true;
+                showApp();
+            } else {
+                showLogin();
+            }
+            
+            // Setup event listeners
+            setupEventListeners();
+            
+            // Load packages
+            loadPackages();
+            
+            // Update dashboard with zeros
+            updateDashboard();
+        });
+        
+        // Setup all event listeners
+        function setupEventListeners() {
+            // Login/Signup toggles
+            document.getElementById('showSignup').addEventListener('click', showSignup);
+            document.getElementById('showLogin').addEventListener('click', showLogin);
+            
+            // Login button
+            document.getElementById('loginBtn').addEventListener('click', handleLogin);
+            
+            // Signup button
+            document.getElementById('signupBtn').addEventListener('click', handleSignup);
+            
+            // Logout button
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Navigation tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    if (!isLoggedIn) return;
+                    
+                    const pageId = this.getAttribute('data-page');
+                    if (pageId === 'home') showHome();
+                    else if (pageId === 'packages') showPackages();
+                    else if (pageId === 'transactions') showTransactions();
+                    else if (pageId === 'profile') showProfile();
+                });
+            });
+            
+            // Transaction buttons
+            document.getElementById('depositBtn').addEventListener('click', () => openModal('deposit'));
+            document.getElementById('withdrawBtn').addEventListener('click', () => openModal('withdraw'));
+            document.getElementById('firstDepositBtn').addEventListener('click', () => openModal('deposit'));
+            
+            // Modal close buttons
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+            
+            // Confirm deposit
+            document.getElementById('confirmDeposit').addEventListener('click', handleDeposit);
+            
+            // Confirm withdraw
+            document.getElementById('confirmWithdraw').addEventListener('click', handleWithdraw);
+            
+            // Withdraw amount calculation
+            document.getElementById('withdraw-amount').addEventListener('input', updateWithdrawAmount);
+            
+            // WhatsApp button
+            document.getElementById('whatsappBtn').addEventListener('click', () => {
+                window.open('https://wa.me/8801340809337', '_blank');
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target.classList.contains('modal')) {
+                    closeAllModals();
+                }
+            });
+        }
+        
+        // Show login page
+        function showLogin() {
+            hideAllPages();
+            pages.login.classList.add('active');
+            document.querySelector('.nav-tab[data-page="home"]').classList.remove('active');
+        }
+        
+        // Show signup page
+        function showSignup() {
+            hideAllPages();
+            pages.signup.classList.add('active');
+        }
+        
+        // Show main app after login
+        function showApp() {
+            hideAllPages();
+            pages.home.classList.add('active');
+            document.querySelector('.nav-tab[data-page="home"]').classList.add('active');
+            
+            // Update user info
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.name;
+                document.getElementById('user-phone').textContent = `Phone: ${currentUser.phone}`;
+                document.getElementById('user-avatar').textContent = currentUser.name.charAt(0);
+                document.getElementById('member-since').textContent = currentUser.joinDate;
+            }
+            
+            updateDashboard();
+        }
+        
+        // Show home page
+        function showHome() {
+            hideAllPages();
+            pages.home.classList.add('active');
+            setActiveTab('home');
+            updateDashboard();
+        }
+        
+        // Show packages page
+        function showPackages() {
+            hideAllPages();
+            pages.packages.classList.add('active');
+            setActiveTab('packages');
+        }
+        
+        // Show transactions page
+        function showTransactions() {
+            hideAllPages();
+            pages.transactions.classList.add('active');
+            setActiveTab('transactions');
+            loadTransactions();
+        }
+        
+        // Show profile page
+        function showProfile() {
+            hideAllPages();
+            pages.profile.classList.add('active');
+            setActiveTab('profile');
+            updateProfile();
+        }
+        
+        // Hide all pages
+        function hideAllPages() {
+            Object.values(pages).forEach(page => page.classList.remove('active'));
+        }
+        
+        // Set active navigation tab
+        function setActiveTab(tabName) {
+            navTabs.forEach(tab => {
+                if (tab.getAttribute('data-page') === tabName) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+        
+        // Handle login
+        function handleLogin() {
+            const phone = document.getElementById('login-phone').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!phone || !password) {
+                alert('Please enter phone number and password');
+                return;
+            }
+            
+            // Check credentials (in real app, this would be a server call)
+            const user = sampleUsers.find(u => u.phone === phone && u.password === password);
+            
+            if (user) {
+                currentUser = user;
+                isLoggedIn = true;
+                
+                // Save to localStorage (in a real app, use secure session storage)
+                localStorage.setItem('sunBankUser', JSON.stringify(user));
+                
+                showApp();
+            } else {
+                alert('Invalid phone number or password');
+            }
+        }
+        
+        // Handle signup
+        function handleSignup() {
+            const name = document.getElementById('signup-name').value;
+            const phone = document.getElementById('signup-phone').value;
+            const password = document.getElementById('signup-password').value;
+            const confirm = document.getElementById('signup-confirm').value;
+            
+            if (!name || !phone || !password || !confirm) {
+                alert('Please fill all fields');
+                return;
+            }
+            
+            if (password !== confirm) {
+                alert('Passwords do not match');
+                return;
+            }
+            
+            if (phone.length !== 11) {
+                alert('Please enter a valid 11-digit phone number');
+                return;
+            }
+            
+            // Check if user already exists
+            const userExists = sampleUsers.some(u => u.phone === phone);
+            if (userExists) {
+                alert('User with this phone number already exists');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                phone,
+                password,
+                name,
+                joinDate: new Date().toISOString().split('T')[0]
+            };
+            
+            sampleUsers.push(newUser);
+            currentUser = newUser;
+            isLoggedIn = true;
+            
+            // Save to localStorage
+            localStorage.setItem('sunBankUser', JSON.stringify(newUser));
+            
+            // Clear form
+            document.getElementById('signup-name').value = '';
+            document.getElementById('signup-phone').value = '';
+            document.getElementById('signup-password').value = '';
+            document.getElementById('signup-confirm').value = '';
+            
+            showApp();
+        }
+        
+        // Handle logout
+        function handleLogout() {
+            currentUser = null;
+            isLoggedIn = false;
+            localStorage.removeItem('sunBankUser');
+            showLogin();
+            
+            // Clear all forms
+            document.getElementById('login-phone').value = '';
+            document.getElementById('login-password').value = '';
+        }
+        
+        // Load investment packages
+        function loadPackages() {
+            const container = document.getElementById('packages-container');
+            container.innerHTML = '';
+            
+            investmentPackages.forEach(pkg => {
+                const packageCard = document.createElement('div');
+                packageCard.className = `package-card ${pkg.popular ? 'popular' : ''}`;
+                
+                packageCard.innerHTML = `
+                    ${pkg.popular ? '<div class="popular-badge">POPULAR</div>' : ''}
+                    <h3 class="package-name">${pkg.name}</h3>
+                    <div class="package-price">${pkg.price} ৳</div>
+                    <div class="package-details">
+                        <div class="detail-item">
+                            <span>Profit:</span>
+                            <span style="color: #38a169; font-weight: 600;">${pkg.profit} ৳</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Lock Period:</span>
+                            <span>${pkg.lockDays} days</span>
+                        </div>
+                        <div class="detail-item">
+                            <span>Daily Profit:</span>
+                            <span>${(pkg.profit / pkg.lockDays).toFixed(2)} ৳/day</span>
+                        </div>
+                    </div>
+                    <button class="package-button" data-package-id="${pkg.id}">Invest Now</button>
+                `;
+                
+                container.appendChild(packageCard);
+                
+                // Add event listener to the button
+                packageCard.querySelector('.package-button').addEventListener('click', function() {
+                    openPackageModal(pkg);
+                });
+            });
+        }
+        
+        // Open package modal
+        function openPackageModal(pkg) {
+            if (userData.balance === 0) {
+                alert('Please deposit funds first to invest in packages');
+                openModal('deposit');
+                return;
+            }
+            
+            const modalContent = document.getElementById('package-modal-content');
+            const totalProfit = pkg.profit;
+            const dailyProfit = (pkg.profit / pkg.lockDays).toFixed(2);
+            
+            modalContent.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #2d3748; margin-bottom: 10px;">${pkg.name}</h3>
+                    <div style="font-size: 1.8rem; font-weight: 700; color: #38a169; margin-bottom: 20px;">${pkg.price} ৳</div>
+                </div>
+                
+                <div class="package-details">
+                    <div class="detail-item">
+                        <span>Investment Amount:</span>
+                        <span>${pkg.price} ৳</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Total Profit:</span>
+                        <span style="color: #38a169; font-weight: 600;">${totalProfit} ৳</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Lock Period:</span>
+                        <span>${pkg.lockDays} days</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Daily Profit:</span>
+                        <span>${dailyProfit} ৳/day</span>
+                    </div>
+                    <div class="detail-item">
+                        <span>Total Return:</span>
+                        <span style="color: #667eea; font-weight: 700;">${pkg.price + totalProfit} ৳</span>
+                    </div>
+                </div>
+                
+                <div class="bkash-info" style="margin-top: 20px;">
+                    <i class="fas fa-info-circle"></i> Send ${pkg.price}৳ to bKash: 01340809337
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label for="package-trxid">bKash Transaction ID</label>
+                    <input type="text" id="package-trxid" placeholder="Enter bKash transaction ID">
+                </div>
+                
+                <button class="form-button" id="buyPackageBtn" data-package-id="${pkg.id}">Confirm Investment</button>
+            `;
+            
+            openModal('package');
+            
+            // Add event listener for buy button
+            document.getElementById('buyPackageBtn').addEventListener('click', function() {
+                const trxId = document.getElementById('package-trxid').value;
+                if (!trxId) {
+                    alert('Please enter bKash transaction ID');
+                    return;
+                }
+                
+                buyPackage(pkg);
+            });
+        }
+        
+        // Buy package
+        function buyPackage(pkg) {
+            if (userData.balance < pkg.price) {
+                alert(`Insufficient balance. You need ${pkg.price}৳ but you have ${userData.balance}৳`);
+                return;
+            }
+            
+            // Update user data
+            userData.balance -= pkg.price;
+            userData.totalInvestment += pkg.price;
+            userData.packagesBought += 1;
+            
+            // Add transaction
+            const transactionId = userData.transactions.length + 1;
+            userData.transactions.unshift({
+                id: transactionId,
+                type: "investment",
+                amount: pkg.price,
+                date: new Date().toISOString().split('T')[0],
+                description: `${pkg.name} Purchase`
+            });
+            
+            // Add running package
+            const purchaseDate = new Date();
+            const endDate = new Date();
+            endDate.setDate(purchaseDate.getDate() + pkg.lockDays);
+            
+            userData.runningPackages.push({
+                packageId: pkg.id,
+                name: pkg.name,
+                purchaseDate: purchaseDate.toISOString().split('T')[0],
+                endDate: endDate.toISOString().split('T')[0],
+                profit: pkg.profit,
+                amount: pkg.price
+            });
+            
+            // Update UI
+            updateDashboard();
+            loadTransactions();
+            loadRunningPackages();
+            closeAllModals();
+            
+            alert(`Successfully purchased ${pkg.name}! Your investment will be locked for ${pkg.lockDays} days.`);
+        }
+        
+        // Load transactions
+        function loadTransactions() {
+            const container = document.getElementById('transactions-list');
+            
+            if (userData.transactions.length === 0) {
+                container.innerHTML = `
+                    <div class="zero-state">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>No Transactions Yet</h3>
+                        <p>Your transaction history will appear here</p>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            userData.transactions.forEach(trans => {
+                const transactionItem = document.createElement('div');
+                transactionItem.className = 'transaction-item';
+                
+                let icon = '';
+                let amountClass = '';
+                
+                if (trans.type === 'deposit') {
+                    icon = '<i class="fas fa-plus-circle" style="color: #38a169;"></i>';
+                    amountClass = 'deposit';
+                } else if (trans.type === 'withdraw') {
+                    icon = '<i class="fas fa-minus-circle" style="color: #e53e3e;"></i>';
+                    amountClass = 'withdraw';
+                } else if (trans.type === 'investment') {
+                    icon = '<i class="fas fa-shopping-cart" style="color: #667eea;"></i>';
+                    amountClass = 'withdraw';
+                } else if (trans.type === 'profit') {
+                    icon = '<i class="fas fa-chart-line" style="color: #38a169;"></i>';
+                    amountClass = 'deposit';
+                }
+                
+                transactionItem.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 1.5rem;">${icon}</div>
+                        <div class="transaction-info">
+                            <h4>${trans.description}</h4>
+                            <p>${trans.date}</p>
+                        </div>
+                    </div>
+                    <div class="transaction-amount ${amountClass}">
+                        ${trans.type === 'withdraw' || trans.type === 'investment' ? '-' : '+'}${trans.amount} ৳
+                    </div>
+                `;
+                
+                container.appendChild(transactionItem);
+            });
+        }
+        
+        // Load running packages
+        function loadRunningPackages() {
+            const container = document.getElementById('running-packages');
+            
+            if (userData.runningPackages.length === 0) {
+                container.innerHTML = `
+                    <div class="zero-state">
+                        <i class="fas fa-box-open"></i>
+                        <h3>No Active Packages</h3>
+                        <p>Start investing to see your running packages here</p>
+                    </div>`;
+                return;
+            }
+            
+            container.innerHTML = '';
+            
+            userData.runningPackages.forEach(pkg => {
+                const packageDiv = document.createElement('div');
+                packageDiv.className = 'transaction-item';
+                
+                // Calculate days left
+                const today = new Date();
+                const endDate = new Date(pkg.endDate);
+                const daysLeft = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+                
+                packageDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <div style="font-size: 1.5rem; color: #667eea;">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <div class="transaction-info">
+                            <h4>${pkg.name}</h4>
+                            <p>Investment: ${pkg.amount}৳ | Profit: ${pkg.profit}৳</p>
+                            <p style="font-size: 0.8rem;">Ends: ${pkg.endDate} (${daysLeft} days left)</p>
+                        </div>
+                    </div>
+                    <div style="color: #38a169; font-weight: 600;">
+                        Active
+                    </div>
+                `;
+                
+                container.appendChild(packageDiv);
+            });
+        }
+        
+        // Update dashboard
+        function updateDashboard() {
+            // Format numbers with leading zeros for empty state
+            const formatZeroBalance = (value) => {
+                return value === 0 ? '000 ৳' : `${value} ৳`;
+            };
+            
+            document.getElementById('total-balance').textContent = formatZeroBalance(userData.balance);
+            document.getElementById('total-deposit').textContent = formatZeroBalance(userData.totalDeposit);
+            document.getElementById('total-investment').textContent = formatZeroBalance(userData.totalInvestment);
+            document.getElementById('total-profit').textContent = formatZeroBalance(userData.totalProfit);
+            
+            // Update CSS class based on balance
+            const balanceElements = [
+                document.getElementById('total-balance'),
+                document.getElementById('total-deposit'),
+                document.getElementById('total-investment'),
+                document.getElementById('total-profit')
+            ];
+            
+            balanceElements.forEach(el => {
+                if (userData.balance === 0 && userData.totalDeposit === 0 && 
+                    userData.totalInvestment === 0 && userData.totalProfit === 0) {
+                    el.classList.add('zero-balance');
+                    el.classList.remove('taka');
+                } else {
+                    el.classList.remove('zero-balance');
+                    el.classList.add('taka');
+                }
+            });
+            
+            // Show/hide zero state message
+            const zeroStateMessage = document.getElementById('zero-state-message');
+            if (userData.totalDeposit === 0) {
+                zeroStateMessage.style.display = 'block';
+            } else {
+                zeroStateMessage.style.display = 'none';
+            }
+        }
+        
+        // Update profile
+        function updateProfile() {
+            const formatZeroBalance = (value) => {
+                return value === 0 ? '000 ৳' : `${value} ৳`;
+            };
+            
+            document.getElementById('profile-investment').textContent = formatZeroBalance(userData.totalInvestment);
+            document.getElementById('profile-profit').textContent = formatZeroBalance(userData.totalProfit);
+            document.getElementById('packages-bought').textContent = userData.packagesBought;
+            
+            // Update CSS class
+            const profileInvestment = document.getElementById('profile-investment');
+            const profileProfit = document.getElementById('profile-profit');
+            
+            if (userData.totalInvestment === 0) {
+                profileInvestment.classList.add('zero-balance');
+                profileInvestment.classList.remove('taka');
+            } else {
+                profileInvestment.classList.remove('zero-balance');
+                profileInvestment.classList.add('taka');
+            }
+            
+            if (userData.totalProfit === 0) {
+                profileProfit.classList.add('zero-balance');
+                profileProfit.classList.remove('taka');
+            } else {
+                profileProfit.classList.remove('zero-balance');
+                profileProfit.classList.add('taka');
+            }
+            
+            loadRunningPackages();
+        }
+        
+        // Handle deposit
+        function handleDeposit() {
+            const amount = parseInt(document.getElementById('deposit-amount').value);
+            const trxId = document.getElementById('deposit-trxid').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (!trxId) {
+                alert('Please enter bKash transaction ID');
+                return;
+            }
+            
+            // Update user data
+            userData.balance += amount;
+            userData.totalDeposit += amount;
+            
+            // Add transaction
+            const transactionId = userData.transactions.length + 1;
+            userData.transactions.unshift({
+                id: transactionId,
+                type: "deposit",
+                amount: amount,
+                date: new Date().toISOString().split('T')[0],
+                description: `Deposit via bKash (ID: ${trxId})`
+            });
+            
+            // Update UI
+            updateDashboard();
+            updateProfile();
+            loadTransactions();
+            closeAllModals();
+            
+            // Clear form
+            document.getElementById('deposit-amount').value = '';
+            document.getElementById('deposit-trxid').value = '';
+            
+            alert(`Successfully deposited ${amount}৳! Your new balance is ${userData.balance}৳.`);
+        }
+        
+        // Handle withdraw
+        function handleWithdraw() {
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+            const bkashNumber = document.getElementById('withdraw-bkash').value;
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            if (userData.balance === 0) {
+                alert('You have zero balance. Please deposit first.');
+                openModal('deposit');
+                return;
+            }
+            
+            if (amount > userData.balance) {
+                alert(`Insufficient balance. You have ${userData.balance}৳ but trying to withdraw ${amount}৳`);
+                return;
+            }
+            
+            if (!bkashNumber || bkashNumber.length !== 11) {
+                alert('Please enter a valid 11-digit bKash number');
+                return;
+            }
+            
+            // Calculate withdrawal charge (2%)
+            const charge = amount * 0.02;
+            const receiveAmount = amount - charge;
+            
+            // Update user data
+            userData.balance -= amount;
+            
+            // Add transaction
+            const transactionId = userData.transactions.length + 1;
+            userData.transactions.unshift({
+                id: transactionId,
+                type: "withdraw",
+                amount: amount,
+                date: new Date().toISOString().split('T')[0],
+                description: `Withdrawal to ${bkashNumber} (Charge: ${charge}৳)`
+            });
+            
+            // Update UI
+            updateDashboard();
+            updateProfile();
+            loadTransactions();
+            closeAllModals();
+            
+            // Clear form
+            document.getElementById('withdraw-amount').value = '';
+            document.getElementById('withdraw-bkash').value = '';
+            document.getElementById('withdraw-receive').textContent = '0 ৳';
+            
+            alert(`Withdrawal request submitted! ${amount}৳ will be sent to ${bkashNumber}. You will receive ${receiveAmount}৳ (2% charge applied).`);
+        }
+        
+        // Update withdraw amount display
+        function updateWithdrawAmount() {
+            const amount = parseInt(document.getElementById('withdraw-amount').value) || 0;
+            const receiveAmount = amount - (amount * 0.02);
+            document.getElementById('withdraw-receive').textContent = `${receiveAmount.toFixed(2)} ৳`;
+        }
+        
+        // Open modal
+        function openModal(modalName) {
+            if (!isLoggedIn) {
+                alert('Please login first');
+                return;
+            }
+            
+            closeAllModals();
+            modals[modalName].classList.add('active');
+        }
+        
+        // Close all modals
+        function closeAllModals() {
+            Object.values(modals).forEach(modal => modal.classList.remove('active'));
+        }
+    </script>
+</body>
+  </html>
